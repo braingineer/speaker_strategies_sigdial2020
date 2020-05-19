@@ -32,3 +32,7 @@ Two libraries in this repository:
 ### Reproducibility
 
 See [`lab/README.md`](lab/README.md) and [`lab/run_all.sh`](lab/run_all.sh)
+
+### Small note...
+
+This repo has the data in it. As it stands, the total repo size is around 200MB.
