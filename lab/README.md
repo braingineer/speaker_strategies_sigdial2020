@@ -2,13 +2,13 @@
 
 In this directory, `lab`, we have organized the model training and analysis code. 
 
-To reproduce the results in the paper:
+To reproduce the results in the paper (steps 1 and 2 can be run with `run_all.sh`):
 
 0. Install the magis_sigdial2020 and pyromancy libraries
     ```bash
     # From repository root
-    # TODO: finish requirements.txt for reproducible environment
     cd src
+    pip install -r requirements.txt
     python setup.py install
     ```
 1. Train the reference model using the scripts in `XKCD_model/scripts`
