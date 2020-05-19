@@ -25,12 +25,12 @@ reasoning.
 
 - data/
     + filteredCorpus.csv
-        - The Colors in Context (CIC) dataset. ([1](https://cocolab.stanford.edu/datasets/colors.html)[2](https://www.aclweb.org/anthology/Q17-1023.pdf))
+        - The Colors in Context (CIC) dataset. ([ref 1](https://cocolab.stanford.edu/datasets/colors.html), [ref 2](https://www.aclweb.org/anthology/Q17-1023.pdf))
     + cic_vectorized.csv
         - A parsed & vectorized form of the CIC dataset
         - Made with [magis_sigdial2020.datasets.color_reference_2017.vectorized.make_or_load_cic()](https://github.com/braingineer/speaker_strategies_sigdial2020/blob/master/src/magis_sigdial2020/datasets/color_reference_2017/vectorized.py))
     + xkcd/
-        - the XKCD dataset ([1](https://blog.xkcd.com/2010/05/03/color-survey-results/)[2](https://www.aclweb.org/anthology/Q15-1008.pdf))
+        - the XKCD dataset ([ref 1](https://blog.xkcd.com/2010/05/03/color-survey-results/), [ref 2](https://www.aclweb.org/anthology/Q15-1008.pdf))
         - annotations.csv
             - descriptions of color patches
         - color_values.npy
