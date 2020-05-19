@@ -1,0 +1,8 @@
+experiment_name: E002_calibrations
+trial_name: 99th_percentile
+root_output_path: "{LAB_SUBDIR_ROOT}/logs"
+target_experiment_name: E001_XKCDModel_uncalibrated
+target_trial_name: published_version 
+
+normalizing_percentile: 99
+xkcd_coordinate_system: fft

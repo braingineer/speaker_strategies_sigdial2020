@@ -1,0 +1,25 @@
+
+# Experiment Hyper Params
+experiment_name: E001_XKCDModel_uncalibrated
+trial_name: published_version
+root_output_path: "{LAB_SUBDIR_ROOT}/logs"
+xkcd_coordinate_system: fft
+
+# Training Hyper Params
+seed: 1337
+num_epochs: 200
+batch_size: 256
+checkpoint_metric: perplexity
+learning_rate: 0.01
+patience_threshold: 4
+# overall l2
+weight_decay: 0.000
+
+# Model Hyper Params
+input_size: -1
+encoder_size: 32
+encoder_depth: 3
+prediction_size: -1
+
+# Runtime params
+cuda: true 

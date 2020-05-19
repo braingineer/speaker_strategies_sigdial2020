@@ -1,0 +1,155 @@
+# experiment settings
+experiment_name: E004_evaluate_on_cic
+trial_name: published_version
+root_output_path: "{LAB_SUBDIR_ROOT}/logs"
+
+# runtime
+device: cuda
+
+# reference model
+reference_model: &refmodel 
+    dir: "{LAB_ROOT}/XKCD_model/logs/E003_XKCDModel_calibrated/published_version"
+    class: XKCDModelWithRGC
+
+# models to evaluate
+models:
+    - model_name: RGC
+      algorithm_class: RGC.core
+      algorithm_kwargs: {}
+      reference_model: *refmodel
+    - model_name: RSA-OOC
+      algorithm_class: RSA.OOC
+      algorithm_kwargs:
+          uses_ooc: true
+          rsa_alpha: 1.0
+      reference_model: *refmodel
+    - model_name: CB-1.0
+      algorithm_class: RSA.MG
+      algorithm_kwargs:
+          rsa_alpha: 1.0
+      reference_model: *refmodel
+    - model_name: CB-2.0
+      algorithm_class: RSA.MG
+      algorithm_kwargs:
+          rsa_alpha: 2.0
+      reference_model: *refmodel
+    - model_name: CB-3.0
+      algorithm_class: RSA.MG
+      algorithm_kwargs:
+          rsa_alpha: 3.0
+      reference_model: *refmodel
+    - model_name: CB-4.0
+      algorithm_class: RSA.MG
+      algorithm_kwargs:
+          rsa_alpha: 4.0
+      reference_model: *refmodel
+    - model_name: CB-5.0
+      algorithm_class: RSA.MG
+      algorithm_kwargs:
+          rsa_alpha: 5.0
+      reference_model: *refmodel
+    - model_name: CB-6.0
+      algorithm_class: RSA.MG
+      algorithm_kwargs:
+          rsa_alpha: 6.0
+      reference_model: *refmodel
+    - model_name: CB-7.0
+      algorithm_class: RSA.MG
+      algorithm_kwargs:
+          rsa_alpha: 7.0
+      reference_model: *refmodel
+    - model_name: CB-8.0
+      algorithm_class: RSA.MG
+      algorithm_kwargs:
+          rsa_alpha: 8.0
+      reference_model: *refmodel
+    - model_name: CB-9.0
+      algorithm_class: RSA.MG
+      algorithm_kwargs:
+          rsa_alpha: 9.0
+      reference_model: *refmodel
+    - model_name: CB-10.0
+      algorithm_class: RSA.MG
+      algorithm_kwargs:
+          rsa_alpha: 10.0
+      reference_model: *refmodel
+    - model_name: CB-11.0
+      algorithm_class: RSA.MG
+      algorithm_kwargs:
+          rsa_alpha: 11.0
+      reference_model: *refmodel
+    - model_name: CB-12.0
+      algorithm_class: RSA.MG
+      algorithm_kwargs:
+          rsa_alpha: 12.0
+      reference_model: *refmodel
+    - model_name: CB-13.0
+      algorithm_class: RSA.MG
+      algorithm_kwargs:
+          rsa_alpha: 13.0
+      reference_model: *refmodel
+    - model_name: CB-14.0
+      algorithm_class: RSA.MG
+      algorithm_kwargs:
+          rsa_alpha: 14.0
+      reference_model: *refmodel
+    - model_name: CB-15.0
+      algorithm_class: RSA.MG
+      algorithm_kwargs:
+          rsa_alpha: 15.0
+      reference_model: *refmodel
+    - model_name: CB-16.0
+      algorithm_class: RSA.MG
+      algorithm_kwargs:
+          rsa_alpha: 16.0
+      reference_model: *refmodel
+    - model_name: CB-17.0
+      algorithm_class: RSA.MG
+      algorithm_kwargs:
+          rsa_alpha: 17.0
+      reference_model: *refmodel
+    - model_name: CB-18.0
+      algorithm_class: RSA.MG
+      algorithm_kwargs:
+          rsa_alpha: 18.0
+      reference_model: *refmodel
+    - model_name: CB-19.0
+      algorithm_class: RSA.MG
+      algorithm_kwargs:
+          rsa_alpha: 19.0
+      reference_model: *refmodel
+    - model_name: CB-20.0
+      algorithm_class: RSA.MG
+      algorithm_kwargs:
+          rsa_alpha: 20.0
+      reference_model: *refmodel
+    - model_name: CB-21.0
+      algorithm_class: RSA.MG
+      algorithm_kwargs:
+          rsa_alpha: 21.0
+      reference_model: *refmodel
+    - model_name: CB-22.0
+      algorithm_class: RSA.MG
+      algorithm_kwargs:
+          rsa_alpha: 22.0
+      reference_model: *refmodel
+    - model_name: CB-23.0
+      algorithm_class: RSA.MG
+      algorithm_kwargs:
+          rsa_alpha: 23.0
+      reference_model: *refmodel
+    - model_name: CB-24.0
+      algorithm_class: RSA.MG
+      algorithm_kwargs:
+          rsa_alpha: 24.0
+      reference_model: *refmodel
+    - model_name: CB-25.0
+      algorithm_class: RSA.MG
+      algorithm_kwargs:
+          rsa_alpha: 25.0
+      reference_model: *refmodel
+    - model_name: CB-26.0
+      algorithm_class: RSA.MG
+      algorithm_kwargs:
+          rsa_alpha: 26.0
+      reference_model: *refmodel
