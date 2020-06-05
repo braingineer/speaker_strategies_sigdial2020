@@ -19,3 +19,9 @@ XKCD_VOCAB = os.path.join(DATA_ROOT, "xkcd/vocab.json")
 CIC_DATA_CSV = os.path.join(DATA_ROOT, "filteredCorpus.csv")
 CIC_VECTORIZED_CSV = os.path.join(DATA_ROOT, "cic_vectorized.csv")
 
+def get_pretrained_dirs():
+    path, dirs, _ = next(os.walk(REPO_ROOT/"models"))
+    return {
+        d: os.path.join(path, d) for d in dirs
+    }
+

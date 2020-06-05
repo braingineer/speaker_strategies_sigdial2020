@@ -52,20 +52,24 @@ def plot_row(row, transcript_title=False, subplot_top=0.8):
     
 
 class ColorspacePlotter:
-    def __init__(self, model, num_samples=1, coordinate_system="fft", cuda=True):
+    def __init__(self, model, coordinate_system="fft", cuda=True):
         self.xkcd = XKCD.from_settings(coordinate_system=coordinate_system)
         self.csd = get_colorspace(coordinate_system=coordinate_system)
         self.device = ("cuda" if cuda and torch.cuda.is_available() else "cpu")
         self.model = model.to(self.device)
+        self.p_word, self.phi = self.apply_model_to_colorspace()
         
-        self.all_p_word = []
-        self.all_phi = []
-        for _ in range(num_samples):
-            p_word, phi = self.apply_model_to_colorspace()
-            self.all_p_word.append(p_word)
-            self.all_phi.append(phi)
-        self.p_word = self.all_p_word[0]
-        self.phi = self.all_phi[0]
+        
+        self._label2rows = {
+            i:[] for i in self.xkcd.color_vocab._idx_to_token.keys()
+        }
+        for row_index, label_index in self.xkcd._target_fast:
+            self._label2rows[label_index].append(row_index)
+            
+        self._label2rows = {
+            label_index: np.array(row_indices, dtype=np.int32) 
+            for label_index, row_indices in self._label2rows.items()
+        }
 
     def apply_model_to_colorspace(self, eps=None):
         p_word = []
@@ -80,10 +84,7 @@ class ColorspacePlotter:
         )
         
         for batch_index, batch in enumerate(batch_generator):
-            model_output = self.model(
-                batch['x_colors'], 
-                reuse_last=(batch_index>0)
-            )
+            model_output = self.model(batch['x_colors'])
             p_word.append(to_numpy(model_output['S0_probability']))
             phi.append(to_numpy(torch.sigmoid(model_output['phi_logit'])))
             
@@ -94,64 +95,52 @@ class ColorspacePlotter:
 
         return p_word, phi
 
-    def contour_plot(self, color_term, target='p_word', levels=[0.1, 0.5], linestyles=['--', '-'], figsize=(15, 5),
-                     title_prefix='', dim_reduce_func=np.mean):
+    def contour_plot(self, color_term, target='p_word', levels=[0.1, 0.5], 
+                     linestyles=['--', '-'], figsize=(15, 5), title_prefix='', 
+                     dim_reduce_func=np.mean, num_to_scatter=-1, scatter_seed=0):
         fig, axes = plt.subplots(1, 2, figsize=figsize)
         activations = getattr(self, target)
         if len(title_prefix) > 0:
             title_prefix = title_prefix.strip() + ' '
 
         index = self.xkcd.color_vocab.lookup_token(color_term)
+        
+        
+        if num_to_scatter > 0:
+            random_state = np.random.RandomState(seed=scatter_seed)
+            xkcd_row_indices = self._label2rows[index]
+            subset = random_state.choice(
+                xkcd_row_indices, 
+                size=min(num_to_scatter, len(xkcd_row_indices)), 
+                replace=False
+            )
+            full_scatter_points = self.xkcd._original_data_matrix[subset]
 
         im = axes[0].contourf(self.csd.h, self.csd.s, dim_reduce_func(activations, axis=2)[:, :, index].T, alpha=0.3)
         plt.colorbar(im, ax=axes[0])
         axes[0].set_xlabel("Hue")
         axes[0].set_ylabel("Saturation")
+        if num_to_scatter > 0:
+            axes[0].scatter(full_scatter_points[:, 0], full_scatter_points[:, 1], marker='x', color='black', alpha=0.5)
+        axes[0].set_xlim(0, 1)
+        axes[0].set_ylim(0, 1)
 
         im = axes[1].contourf(self.csd.h, self.csd.v, dim_reduce_func(activations, axis=1)[:, :, index].T, alpha=0.3)
         plt.colorbar(im, ax=axes[1])
         axes[1].set_xlabel("Hue")
         axes[1].set_ylabel("Value")
+        if num_to_scatter > 0:
+            axes[1].scatter(full_scatter_points[:, 0], full_scatter_points[:, 2], marker='x', color='black', alpha=0.5)
+        axes[1].set_xlim(0, 1)
+        axes[1].set_ylim(0, 1)
 
         plt.tight_layout()
         plt.subplots_adjust(top=0.9)
-        plt.suptitle(f'{title_prefix}{target} for {color_term}')
+        if target == "phi":
+            plt.suptitle(f'Applicability (phi) of {color_term} across colorspace')
+        elif target == "p_word":
+            plt.suptitle(f'Probability of {color_term} across colorspace')
 
     def plot_both_contours(self, color_term, **kwargs):
         self.contour_plot(color_term, 'phi', **kwargs)
         self.contour_plot(color_term, 'p_word', **kwargs)
-
-    def many_contour_plot(self, color_term, target='phi', levels=[0.1, 0.5, 0.9], linestyles=['-', '-', '-'], figsize=(10, 3),
-                          title_prefix='', dim_reduce_func=np.mean):
-        fig, axes = plt.subplots(1, 2, figsize=figsize)
-        if len(title_prefix) > 0:
-            title_prefix = title_prefix.strip() + ' '
-
-        index = self.xkcd.color_vocab.lookup_token(color_term)
-        activations = getattr(self, f'all_{target}')
-
-        for i, activation in enumerate(activations, 1):
-            axes[0].contour(self.csd.h, self.csd.s, dim_reduce_func(activation, axis=2)[:, :, index].T,
-                            levels=levels,
-                            linestyles=linestyles,
-                            colors=['black'] * len(levels),
-                            linewidths=1, alpha=0.8)
-            axes[0].set_xlabel("Hue")
-            axes[0].set_ylabel("Saturation")
-
-        for i, activation in enumerate(activations, 1):
-            axes[1].contour(self.csd.h, self.csd.v, dim_reduce_func(activation, axis=1)[:, :, index].T,
-                            levels=levels,
-                            linestyles=linestyles,
-                            colors=['black'] * len(levels),
-                            linewidths=1, alpha=0.8)
-            axes[1].set_xlabel("Hue")
-            axes[1].set_ylabel("Value")
-
-            plt.tight_layout()
-            plt.subplots_adjust(top=0.9)
-            plt.suptitle(f'{title_prefix}{target} for {color_term}')
-
-    def plot_both_many_contour(self, color_term, **kwargs):
-        self.many_contour_plot(color_term, 'phi', **kwargs)
-        self.many_contour_plot(color_term, 'p_word', **kwargs)    

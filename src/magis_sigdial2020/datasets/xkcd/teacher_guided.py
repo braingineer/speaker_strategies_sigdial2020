@@ -1,5 +1,4 @@
 from magis_sigdial2020.datasets.xkcd.vectorized import XKCD
-from magis_sigdial2020.settings import XKCD_TEACHER_PHI
 from magis_sigdial2020.utils.data import Dataset
 import numpy as np
 
@@ -13,10 +12,6 @@ class TeacherGuidedXKCD(Dataset):
         self.split = None
         self.set_split("train")
         self._teacher_phi_path = teacher_phi_path
-
-    @classmethod
-    def from_settings(cls, xkcd_coordinate_system='x-y'):
-        return cls(XKCD_TEACHER_PHI, xkcd_coordinate_system)
 
     def get_teacher_phi_path(self):
         return self._teacher_phi_path
